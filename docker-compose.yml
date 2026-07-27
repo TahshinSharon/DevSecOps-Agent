@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devsecops-agent-backend
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      DATABASE_PATH: /app/data/docker_inspector.db
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      TRIVY_CACHE_DIR: /app/.cache/trivy
+      TRIVY_BIN: trivy
+    volumes:
+      # Required: allows DevSecOps Agent to inspect containers/images on the host machine.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Persistent inspection history database.
+      - devsecops-agent-data:/app/data
+      # Persistent Trivy vulnerability DB/cache. This makes later scans faster.
+      - trivy-cache:/app/.cache/trivy
+    networks:
+      - devsecops-agent-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5).read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ""
+    container_name: devsecops-agent-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    networks:
+      - devsecops-agent-net
+
+volumes:
+  devsecops-agent-data:
+  trivy-cache:
+
+networks:
+  devsecops-agent-net:
+    driver: bridge
