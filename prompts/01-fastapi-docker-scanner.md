@@ -1,0 +1,1 @@
+Build a FastAPI backend for a Docker inspection app running on an AWS EC2 machine. Use Python, Docker SDK, JWT auth, SQLite, and WebSocket progress updates. The scanner must read Docker containers, images, volumes, networks, ports, mounts, restart policies, health state, and runtime CPU/memory stats. The app must not execute destructive Docker commands.

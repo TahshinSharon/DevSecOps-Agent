@@ -1,0 +1,1 @@
+Write AWS EC2 deployment instructions for DevSecOps Agent. Include Docker installation, backend Python setup, frontend build, Nginx reverse proxy, Security Group restrictions, HTTPS recommendation, and warning about Docker socket permissions.

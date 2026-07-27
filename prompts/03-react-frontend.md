@@ -1,0 +1,1 @@
+Build a React JavaScript frontend with Vite for DevSecOps Agent. Include login/signup, dashboard, inspection options, live WebSocket progress, inspection history, and a detailed report page. Do not use TypeScript. Use a modern dark DevOps dashboard style.
