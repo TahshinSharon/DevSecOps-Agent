@@ -121,15 +121,14 @@ Sign up for an account, then run your first scan from the dashboard.
 
 ```
 DevSecOps-Agent/
-├── backend/
-│   ├── main.py            # FastAPI routes
-│   ├── docker_scanner.py  # Local Docker inspection
-│   ├── cloud_scanner.py   # AWS / GCP / Azure scanning
-│   ├── trivy_scanner.py   # CVE & secret scanning
-│   ├── ai_analyzer.py     # OpenAI + rule-based analysis
-│   └── auth.py / db.py    # JWT auth + SQLite
-├── frontend/
-│   └── src/pages/         # Login, Dashboard, Report, History
-├── docker-compose.yml
-└── DOCKER-RUNBOOK.md      # Ops runbook
+├── backend/               # Python FastAPI service
+├── frontend/              # React + Vite web app
+├── docker-compose.yml     # Single-command deployment
+└── DOCKER-RUNBOOK.md      # Operations and deployment guide
 ```
+
+**Backend** — REST API and WebSocket server that orchestrates all scanning logic. Handles user authentication, stores scan history, and exposes inspection endpoints. Integrates with the Docker daemon, cloud provider SDKs, and Trivy CLI, then feeds results into the AI analysis layer.
+
+**Frontend** — Single-page application with four views: Login, Dashboard (start a scan), Live Report (real-time progress via WebSocket), and History (browse and compare past scans).
+
+**Deployment** — The entire stack (frontend, backend, Trivy sidecar) starts with a single `docker compose up` command. No external database required; scan history is persisted in a local SQLite file.
